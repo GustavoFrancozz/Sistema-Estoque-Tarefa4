@@ -31,20 +31,23 @@ int main(void) {
     int total_categorias = 0;
     int opcao;
 
-    setlocale(LC_NUMERIC, "C");  /* Garante ponto nos numeros dos arquivos. */
+    /* Os precos sao gravados com ponto nos arquivos de texto. */
+    setlocale(LC_NUMERIC, "C");
     carregar_categorias(categorias, &total_categorias);
     carregar_produtos(produtos, &total_produtos, categorias, total_categorias);
-
-    printf("Sistema de Estoque iniciado: %d categoria(s) e %d produto(s) carregado(s).\n",
+    printf("Sistema iniciado: %d categoria(s) e %d registro(s) de produto carregado(s).\n",
            total_categorias, total_produtos);
+
     do {
         puts("\n===== SISTEMA DE ESTOQUE =====");
         puts("1 - Cadastrar Produto");
         puts("2 - Listar Produtos");
         puts("3 - Pesquisar Produto");
-        puts("4 - Categorias");
-        puts("5 - Sair");
-        opcao = ler_inteiro_intervalo("Escolha uma opcao: ", 1, 5);
+        puts("4 - Alterar Estoque de um Produto");
+        puts("5 - Remover Produto");
+        puts("6 - Categorias");
+        puts("7 - Sair");
+        opcao = ler_inteiro_intervalo("Escolha uma opcao: ", 1, 7);
         switch (opcao) {
             case 1:
                 cadastrar_produto(produtos, &total_produtos, categorias, total_categorias);
@@ -57,13 +60,21 @@ int main(void) {
                 pesquisar_produto(produtos, total_produtos, categorias, total_categorias);
                 break;
             case 4:
+                alterar_estoque(produtos, total_produtos, categorias, total_categorias);
+                salvar_produtos(produtos, total_produtos);
+                break;
+            case 5:
+                remover_produto(produtos, total_produtos);
+                salvar_produtos(produtos, total_produtos);
+                break;
+            case 6:
                 menu_categorias(categorias, &total_categorias);
                 break;
-            case 5: {
+            case 7: {
                 int salvou_categorias = salvar_categorias(categorias, total_categorias);
                 int salvou_produtos = salvar_produtos(produtos, total_produtos);
                 if (salvou_categorias && salvou_produtos) {
-                    puts("Dados salvos nos arquivos categorias.txt e produtos.txt.");
+                    puts("Dados salvos em categorias.txt e produtos.txt.");
                 } else {
                     puts("Atencao: houve um erro ao salvar algum arquivo.");
                 }
@@ -71,6 +82,6 @@ int main(void) {
                 break;
             }
         }
-    } while (opcao != 5);
+    } while (opcao != 7);
     return 0;
 }
